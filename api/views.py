@@ -1,4 +1,4 @@
-from django.shortcuts import render  # <-- Agrega esta línea arriba si no está
+from django.shortcuts import render  
 from rest_framework import viewsets
 from .models import Dueno, Veterinario, Mascota, AtencionMedica
 from .serializer import (

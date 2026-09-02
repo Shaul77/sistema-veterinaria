@@ -23,3 +23,4 @@ urlpatterns = [
     path('api/', include('api.urls')),  #[cite: 2]
     path('', views.bienvenida, name='bienvenida'),  # <-- Ruta raíz para la bienvenida
 ]
+

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - ERROR</title>
+    <!-- Fuentes: Rubik Glitch para el fondo grunge, Bebas Neue para el 404 limpio, Special Elite para los textos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rubik+Glitch&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #050505;
+            color: #d1d1d1;
+            font-family: 'Special Elite', monospace, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Columna de fondo exactamente como la primera versión */
+        .bg-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 0.9;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.25;
+        }
+        .bg-watermark span {
+            font-family: 'Rubik Glitch', monospace;
+            font-size: clamp(3rem, 8vw, 6rem);
+            letter-spacing: 6px;
+            color: #333;
+        }
+        .bg-watermark span.red-glow {
+            color: #ff0000;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 30px rgba(180, 0, 0, 0.4);
+        }
+
+        /* Tarjeta frontal */
+        .error-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(12, 12, 12, 0.85);
+            border: 1px solid rgba(255, 20, 20, 0.25);
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.9);
+            border-radius: 12px;
+            padding: 45px 35px;
+            max-width: 520px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(6px);
+        }
+
+        /* 404 estático, sin distorsión y perfectamente legible */
+        .error-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(5.5rem, 14vw, 8.5rem);
+            color: #ff1a1a;
+            letter-spacing: 6px;
+            line-height: 1;
+            margin-bottom: 5px;
+            text-shadow: 0 0 14px rgba(255, 26, 26, 0.6);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #331010;
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 0.95rem;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 12px 28px;
+            background-color: transparent;
+            color: #ff2222;
+            border: 1.5px solid #ff2222;
+            text-decoration: none;
+            font-family: 'Special Elite', monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-home:hover {
+            background-color: #ff2222;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 34, 34, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo original restaurado con la tipografía grunge/glitch -->
+    <div class="bg-watermark">
+        <span class="red-glow">ERROR</span>
+        <span>ERROR</span>
+        <span class="red-glow">ERROR</span>
+        <span>ERROR</span>
+        <span class="red-glow">ERROR</span>
+        <span>ERROR</span>
+        <span>ERROR</span>
+    </div>
+
+    <!-- Contenedor con 404 nítido -->
+    <div class="error-card">
+        <div class="error-title">404</div>
+        <h2>Página no encontrada</h2>
+        <p>El recurso que buscas fue movido, eliminado o nunca existió en el sistema.</p>
+        <a href="/" class="btn-home">Volver al Inicio</a>
+    </div>
+
+</body>
+</html>
