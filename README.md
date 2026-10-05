@@ -5,34 +5,34 @@ Proyecto desarrollado con **Django** y **Django REST Framework (DRF)**, conectad
 ---
 
 ## 📑 Tabla de Contenidos
-1. [Descripción General](#-descripción-general)
-2. [Arquitectura y Estructura del Proyecto](#-arquitectura-y-estructura-del-proyecto)
-3. [Modelo de Datos y Entidades](#-modelo-de-datos-y-entidades)
-4. [Tecnologías y Dependencias](#-tecnologías-y-dependencias)
-5. [Requisitos Previos](#-requisitos-previos)
-6. [Instalación y Puesta en Marcha (Paso a Paso)](#-instalación-y-puesta-en-marcha-paso-a-paso)
-7. [Endpoints de la API y Ejemplos de Uso](#-endpoints-de-la-api-y-ejemplos-de-uso)
-8. [Seguridad y Buenas Prácticas Implementadas](#-seguridad-y-buenas-prácticas-implementadas)
-9. [Resolución de Problemas Frecuentes](#-resolución-de-problemas-frecuentes)
+1. [Descripción General](#descripción-general)
+2. [Arquitectura y Estructura del Proyecto](#arquitectura-y-estructura-del-proyecto)
+3. [Modelo de Datos y Entidades](#modelo-de-datos-y-entidades)
+4. [Tecnologías y Dependencias](#tecnologías-y-dependencias)
+5. [Requisitos Previos](#requisitos-previos)
+6. [Instalación y Puesta en Marcha](#instalación-y-puesta-en-marcha)
+7. [Endpoints de la API y Ejemplos](#endpoints-de-la-api-y-ejemplos)
+8. [Seguridad y Buenas Prácticas](#seguridad-y-buenas-prácticas)
+9. [Resolución de Problemas Frecuentes](#resolución-de-problemas-frecuentes)
 
 ---
 
-## 📖 Descripción General
+## Descripción General
 
 Este backend expone una **API RESTful** que permite realizar operaciones de lectura y gestión de datos sobre las entidades fundamentales de una clínica veterinaria. Implementa serializadores para transformar modelos relacionales en respuestas estandarizadas en formato JSON, junto con un panel administrativo visual para la gestión interna.
 
-El proyecto está diseñado bajo buenas prácticas de la industria:
+El proyecto está diseñado bajo buenas prácticas:
 * **Separación de responsabilidades:** lógica de negocio, serialización y enrutamiento claramente divididos.
 * **Seguridad de credenciales:** uso de variables de entorno para evitar filtraciones de contraseñas.
 * **Persistencia robusta:** motor relacional MySQL con integridad referencial (claves foráneas).
 
 ---
 
-## 🏛️ Arquitectura y Estructura del Proyecto
+## Arquitectura y Estructura del Proyecto
 
-El árbol de directorios está organizado de la siguiente manera:
+El árbol de directorios del proyecto se organiza de la siguiente manera:
 
-```plaintext
+```text
 sistema-veterinaria/
 │
 ├── api/                        # Aplicación principal de la API
@@ -56,8 +56,16 @@ sistema-veterinaria/
 ├── database.sql                # Respaldo estructural y datos iniciales de MySQL
 ├── manage.py                   # Utilidad CLI principal de Django
 └── requirements.txt            # Lista de dependencias del entorno Python
+```
 
-🗄️ Modelo de Datos y EntidadesEl sistema gestiona 4 entidades vinculadas mediante relaciones de clave foránea:Plaintext   +---------------+          1 : N          +---------------+
+---
+
+## Modelo de Datos y Entidades
+
+El sistema gestiona 4 entidades vinculadas mediante relaciones de clave foránea:
+
+```text
+   +---------------+          1 : N          +---------------+
    |     Dueno     |------------------------<|    Mascota    |
    +---------------+                         +---------------+
                                                      |
@@ -66,16 +74,79 @@ sistema-veterinaria/
    +---------------+          1 : N          +---------------+
    |  Veterinario  |------------------------<|AtencionMedica |
    +---------------+                         +---------------+
-Dueño (Dueno): Datos del cliente o tutor responsable (Nombre, RUT, Teléfono, Correo, Dirección).Veterinario (Veterinario): Profesional del centro médico (Nombre, Especialidad, Teléfono).Mascota (Mascota): Ficha del paciente animal, asociada directamente a un Dueño (Nombre, Especie, Raza, Edad).Atención Médica (AtencionMedica): Registro de consulta clínica, asociada a una Mascota y al Veterinario que realizó la atención (Fecha, Motivo de consulta, Diagnóstico, Tratamiento).💻 Tecnologías y DependenciasLenguaje: Python 3.10+Framework Web: Django (4.x / 5.x)API Toolkit: Django REST FrameworkBase de Datos: MySQL Server (mediante XAMPP)Conector DB: PyMySQL / mysqlclientGestor de Variables de Entorno: python-decouple / python-dotenvControl de Versiones: Git y GitHub⚙️ Requisitos PreviosAntes de ejecutar el proyecto en una máquina limpia, asegúrate de contar con:Python 3.10+ instalado y agregado al PATH del sistema.XAMPP instalado (con módulos Apache y MySQL funcionales).Git instalado en el equipo.🚀 Instalación y Puesta en Marcha (Paso a Paso)Paso 1: Iniciar el servidor de Base de DatosAbre el panel de control de XAMPP.Haz clic en Start junto a los servicios Apache y MySQL.Abre tu navegador y verifica el acceso en: http://localhost/phpmyadmin.Paso 2: Clonar el repositorioAbre una terminal (PowerShell, CMD o Bash) y ejecuta:Bashgit clone [https://github.com/Shaul77/sistema-veterinaria.git](https://github.com/Shaul77/sistema-veterinaria.git)
+```
+
+* **Dueño (`Dueno`):** Datos del cliente o tutor responsable (Nombre, RUT, Teléfono, Correo, Dirección).
+* **Veterinario (`Veterinario`):** Profesional del centro médico (Nombre, Especialidad, Teléfono).
+* **Mascota (`Mascota`):** Ficha del paciente animal, asociada directamente a un Dueño (Nombre, Especie, Raza, Edad).
+* **Atención Médica (`AtencionMedica`):** Registro de consulta clínica, asociada a una Mascota y al Veterinario que realizó la atención (Fecha, Motivo de consulta, Diagnóstico, Tratamiento).
+
+---
+
+## Tecnologías y Dependencias
+
+* **Lenguaje:** Python 3.10+
+* **Framework Web:** Django (4.x / 5.x)
+* **API Toolkit:** Django REST Framework
+* **Base de Datos:** MySQL Server (mediante XAMPP)
+* **Conector DB:** PyMySQL
+* **Gestor de Variables de Entorno:** python-decouple / python-dotenv
+* **Control de Versiones:** Git y GitHub
+
+---
+
+## Requisitos Previos
+
+Antes de ejecutar el proyecto, asegúrate de contar con:
+1. **Python 3.10+** instalado y agregado al `PATH`.
+2. **XAMPP** instalado (con módulos Apache y MySQL en ejecución).
+3. **Git** instalado en el equipo.
+
+---
+
+## Instalación y Puesta en Marcha
+
+### Paso 1: Iniciar el servidor de Base de Datos
+1. Abre el panel de control de **XAMPP**.
+2. Haz clic en **Start** junto a los servicios **Apache** y **MySQL**.
+3. Verifica el acceso en tu navegador: `http://localhost/phpmyadmin`.
+
+### Paso 2: Clonar el repositorio
+Abre una terminal y descarga el proyecto:
+
+```bash
+git clone https://github.com/Shaul77/sistema-veterinaria.git
 cd sistema-veterinaria
-Paso 3: Crear y activar el entorno virtualAislar las librerías asegura que el proyecto funcione de manera independiente al resto del sistema operativo:En Windows (PowerShell):PowerShellpython -m venv env
+```
+
+### Paso 3: Crear y activar el entorno virtual
+
+* **En Windows (PowerShell):**
+```powershell
+python -m venv env
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 .\env\Scripts\activate
-En Linux / macOS:Bashpython3 -m venv env
+```
+
+* **En Linux / macOS:**
+```bash
+python3 -m venv env
 source env/bin/activate
-(Notarás el prefijo (env) a la izquierda de la línea de comandos).Paso 4: Instalar las dependenciasCon el entorno virtual activo, descarga los paquetes necesarios:Bashpip install -r requirements.txt
-Paso 5: Configurar variables de entorno (.env)Por estándares de seguridad, las credenciales reales no se versionan en Git:Copia el archivo de muestra:Bashcp .env.example .env
-(En Windows CMD puedes usar copy .env.example .env).Abre el archivo .env creado y verifica los parámetros de conexión local:Fragmento de códigoSECRET_KEY=clave_secreta_django_aqui
+```
+
+### Paso 4: Instalar las dependencias
+Con el entorno virtual activo `(env)`, instala los paquetes:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Paso 5: Configurar variables de entorno (`.env`)
+1. Crea un archivo llamado `.env` en la raíz del proyecto tomando como base `.env.example`.
+2. Completa los valores locales:
+
+```env
+SECRET_KEY=clave_secreta_django_aqui
 DEBUG=True
 
 DB_NAME=veterinaria_db
@@ -83,17 +154,67 @@ DB_USER=root
 DB_PASSWORD=
 DB_HOST=127.0.0.1
 DB_PORT=3306
-Paso 6: Configuración de la Base de DatosTienes dos alternativas para cargar la base de datos:Opción A (Importación directa desde phpMyAdmin):Entra a http://localhost/phpmyadmin.Crea una base de datos llamada veterinaria_db.Haz clic en la pestaña Importar, selecciona el archivo database.sql ubicado en la raíz del proyecto y presiona Continuar.Opción B (Migraciones de Django):Crea la base de datos vacía veterinaria_db en phpMyAdmin.Ejecuta en la terminal:Bashpython manage.py migrate
-Paso 7: Crear superusuario (Opcional, para acceso al admin)Si deseas ingresar al panel web administrativo con un nuevo usuario:Bashpython manage.py createsuperuser
-Completa nombre de usuario, correo y contraseña.Paso 8: Levantar el servidor de desarrolloInicia la aplicación:Bashpython manage.py runserver
-El servidor estará activo y escuchando peticiones en: http://127.0.0.1:8000/.🌐 Endpoints de la API y Ejemplos de UsoLa API REST cuenta con una interfaz web interactiva (Browsable API) disponible en http://127.0.0.1:8000/api/.Tabla de Endpoints DisponiblesMétodo HTTPEndpointDescripciónParámetros / PayloadGET/api/duenos/Listar todos los dueñosN/APOST/api/duenos/Crear un nuevo dueñoObjeto JSON con datos del dueñoGET/api/duenos/{id}/Consultar detalle de un dueñoID en URLGET/api/veterinarios/Listar todos los veterinariosN/APOST/api/veterinarios/Registrar un nuevo veterinarioObjeto JSON del veterinarioGET/api/mascotas/Listar todas las mascotasN/APOST/api/mascotas/Registrar una mascotaJSON incluyendo dueno (ID)GET/api/atenciones/Listar atenciones clínicasN/APOST/api/atenciones/Registrar una atención médicaJSON con mascota (ID) y veterinario (ID)Ejemplo de Petición y Respuesta (JSON)Petición POST a /api/mascotas/JSON{
+```
+
+### Paso 6: Configurar la Base de Datos
+* **Opción con migraciones (Recomendada):**
+  1. Crea una base de datos vacía llamada `veterinaria_db` en phpMyAdmin.
+  2. Ejecuta en la terminal:
+```bash
+python manage.py migrate
+```
+
+* **Opción con script SQL:**
+  1. Crea la base de datos `veterinaria_db` en phpMyAdmin.
+  2. Entra a la pestaña **Importar**, selecciona el archivo `database.sql` de la raíz del proyecto y haz clic en **Continuar**.
+
+### Paso 7: Iniciar el servidor
+Ejecuta:
+
+```bash
+python manage.py runserver
+```
+
+El servidor quedará activo en: `[http://127.0.0.1:8000/](http://127.0.0.1:8000/)`.
+
+---
+
+## Endpoints de la API y Ejemplos
+
+La API REST cuenta con una interfaz web interactiva disponible en: `[http://127.0.0.1:8000/api/](http://127.0.0.1:8000/api/)`.
+
+### Endpoints Disponibles
+
+| Método HTTP | Endpoint | Descripción | Parámetros / Payload |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/duenos/` | Listar todos los dueños | Ninguno |
+| `POST` | `/api/duenos/` | Registrar un dueño | JSON con datos del dueño |
+| `GET` | `/api/duenos/{id}/` | Detalle de un dueño | ID en URL |
+| `GET` | `/api/veterinarios/` | Listar todos los veterinarios | Ninguno |
+| `POST` | `/api/veterinarios/` | Registrar un veterinario | JSON del veterinario |
+| `GET` | `/api/mascotas/` | Listar todas las mascotas | Ninguno |
+| `POST` | `/api/mascotas/` | Registrar una mascota | JSON con datos y `dueno` (ID) |
+| `GET` | `/api/atenciones/` | Listar atenciones clínicas | Ninguno |
+| `POST` | `/api/atenciones/` | Registrar atención | JSON con `mascota` (ID) y `veterinario` (ID) |
+
+---
+
+### Ejemplo de Petición y Respuesta JSON
+
+**Petición `POST` a `/api/mascotas/`:**
+```json
+{
   "nombre": "Rocky",
   "especie": "Canino",
   "raza": "Golden Retriever",
   "edad": 3,
   "dueno": 1
 }
-Respuesta 201 CreatedJSON{
+```
+
+**Respuesta `201 Created`:**
+```json
+{
   "id": 1,
   "nombre": "Rocky",
   "especie": "Canino",
@@ -101,5 +222,28 @@ Respuesta 201 CreatedJSON{
   "edad": 3,
   "dueno": 1
 }
-🛡️ Seguridad y Buenas Prácticas ImplementadasPrincipio de Mínima Exposición: Las credenciales de base de datos (DB_USER, DB_PASSWORD), el host y la SECRET_KEY se extraen en tiempo de ejecución desde variables de entorno.Control de Exclusiones con .gitignore: Se bloquea activamente el seguimiento de:Archivos de entorno (.env, .envrc).Entornos virtuales (env/, venv/).Archivos temporales de ejecución y bytecode (__pycache__/, *.pyc).Documentación de Entorno (.env.example): Se provee una plantilla clara para permitir el despliegue del proyecto en otros entornos sin comprometer información sensible.🔧 Resolución de Problemas FrecuentesError de conexión a la base de datos (Can't connect to MySQL server on '127.0.0.1'):Asegúrate de que el módulo MySQL esté en verde (iniciado) en el panel de XAMPP.Verifica que el puerto en tu .env sea el 3306.Error al ejecutar scripts en PowerShell (Activate.ps1 cannot be loaded...):Ejecuta en la terminal con permisos de usuario:PowerShellSet-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-Error Table 'veterinaria_db.api_dueno' doesn't exist:La base de datos no tiene las tablas creadas. Ejecuta python manage.py migrate o importa el archivo database.sql en phpMyAdmin.
+```
+
+---
+
+## Seguridad y Buenas Prácticas
+
+* **Variables de Entorno:** Credenciales de base de datos (`DB_USER`, `DB_PASSWORD`), host y `SECRET_KEY` se cargan en memoria y nunca se suben al repositorio.
+* **Reglas en `.gitignore`:** Se excluyen del control de versiones los entornos virtuales (`env/`), archivos temporales de Python (`__pycache__/`) y archivos de configuración sensible (`.env`).
+* **Plantilla `.env.example`:** Permite que cualquier evaluador clone y configure el proyecto de manera inmediata sin exponer datos reales.
+
+---
+
+## Resolución de Problemas Frecuentes
+
+* **Error de conexión a la base de datos (`Can't connect to MySQL server`):**
+  Asegúrate de que el servicio **MySQL** esté iniciado en XAMPP y que el puerto configurado en el archivo `.env` sea `3306`.
+
+* **Error al activar el entorno virtual en PowerShell (`ExecutionPolicy`):**
+  Ejecuta en PowerShell con permisos de usuario:
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+```
+
+* **Error `Table 'veterinaria_db.api_dueno' doesn't exist`:**
+  Ejecuta las migraciones pendientes con `python manage.py migrate` o importa el archivo `database.sql` en phpMyAdmin.
