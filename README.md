@@ -1,249 +1,97 @@
-# 🐾 Sistema de Gestión Veterinaria — Backend API REST
+# Sistema de Gestion Veterinaria
 
-Proyecto desarrollado con **Django** y **Django REST Framework (DRF)**, conectado a un motor de base de datos relacional **MySQL** a través de XAMPP. El sistema permite administrar de forma centralizada los procesos clínicos y administrativos de un centro veterinario mediante una arquitectura desacoplada, segura y escalable.
+Proyecto desarrollado en Django y Django REST Framework para la administracion de una clinica veterinaria, utilizando MySQL como base de datos relacional. Corresponde a la Evaluacion 3 del curso de desarrollo backend.
 
----
-
-## 📑 Tabla de Contenidos
-1. [Descripción General](#descripción-general)
-2. [Arquitectura y Estructura del Proyecto](#arquitectura-y-estructura-del-proyecto)
-3. [Modelo de Datos y Entidades](#modelo-de-datos-y-entidades)
-4. [Tecnologías y Dependencias](#tecnologías-y-dependencias)
-5. [Requisitos Previos](#requisitos-previos)
-6. [Instalación y Puesta en Marcha](#instalación-y-puesta-en-marcha)
-7. [Endpoints de la API y Ejemplos](#endpoints-de-la-api-y-ejemplos)
-8. [Seguridad y Buenas Prácticas](#seguridad-y-buenas-prácticas)
-9. [Resolución de Problemas Frecuentes](#resolución-de-problemas-frecuentes)
+El sistema cuenta con un portal web con inicio de sesion, vistas protegidas para el personal de la clinica y una API RESTful completa para la administracion de los registros.
 
 ---
 
-## Descripción General
+## Funcionalidades principales
 
-Este backend expone una **API RESTful** que permite realizar operaciones de lectura y gestión de datos sobre las entidades fundamentales de una clínica veterinaria. Implementa serializadores para transformar modelos relacionales en respuestas estandarizadas en formato JSON, junto con un panel administrativo visual para la gestión interna.
+### 1. Seguridad y Control de Acceso
+* **Autenticacion:** Inicio de sesion y cierre de sesion seguro usando el sistema de usuarios de Django.
+* **Proteccion de rutas:** Si un usuario sin registrar intenta ingresar a las zonas privadas (`/dashboard/` o `/reporte/`), el sistema bloquea el acceso de inmediato y lo redirige a la pantalla de login (`302 Found`).
+* **Variables de entorno:** La clave secreta del proyecto y las contraseñas de la base de datos se manejan en un archivo `.env` para no exponer datos sensibles.
 
-El proyecto está diseñado bajo buenas prácticas:
-* **Separación de responsabilidades:** lógica de negocio, serialización y enrutamiento claramente divididos.
-* **Seguridad de credenciales:** uso de variables de entorno para evitar filtraciones de contraseñas.
-* **Persistencia robusta:** motor relacional MySQL con integridad referencial (claves foráneas).
+### 2. Vistas Protegidas del Sistema
+* **Panel de Control (FBV):** Vista basada en funcion (`/dashboard/`) protegida con `@login_required`. Muestra tarjetas con el resumen en tiempo real del total de dueños, mascotas, veterinarios y atenciones registradas.
+* **Reporte de Atenciones (CBV):** Vista basada en clase (`/reporte/`) protegida con `LoginRequiredMixin`. Muestra la tabla con el historial de atenciones medicas, fechas y diagnosticos de los pacientes.
 
----
+### 3. API RESTful (CRUD)
+Se implementaron los endpoints necesarios con Django REST Framework para gestionar el modelo de dueños:
 
-## Arquitectura y Estructura del Proyecto
-
-El árbol de directorios del proyecto se organiza de la siguiente manera:
-
-```text
-sistema-veterinaria/
-│
-├── api/                        # Aplicación principal de la API
-│   ├── migrations/             # Historial de migraciones hacia MySQL
-│   ├── admin.py                # Registro de modelos en el panel de administración
-│   ├── apps.py                 # Configuración del paquete de la app
-│   ├── models.py               # Definición de tablas y relaciones ORM
-│   ├── serializers.py          # Transformación de datos entre Modelos y JSON
-│   ├── urls.py                 # Rutas específicas de los endpoints de la API
-│   └── views.py                # Controladores y ViewSets de DRF
-│
-├── drf/                        # Módulo de configuración global del proyecto
-│   ├── __init__.py             # Inicialización y puente PyMySQL
-│   ├── asgi.py                 # Punto de entrada ASGI
-│   ├── settings.py             # Configuración principal (DB, apps, middleware)
-│   ├── urls.py                 # Enrutador principal del sistema
-│   └── wsgi.py                 # Punto de entrada WSGI
-│
-├── .env.example                # Plantilla pública de variables de entorno requeridas
-├── .gitignore                  # Reglas de exclusión para control de versiones Git
-├── database.sql                # Respaldo estructural y datos iniciales de MySQL
-├── manage.py                   # Utilidad CLI principal de Django
-└── requirements.txt            # Lista de dependencias del entorno Python
-```
+* **GET /api/duenos/**: Lista todos los dueños registrados en formato JSON (Codigo 200).
+* **POST /api/duenos/**: Permite ingresar y registrar un nuevo dueño en el sistema (Codigo 201).
+* **GET /api/duenos/<id>/**: Consulta la informacion detallada de un dueño en particular por su ID (Codigo 200).
+* **PUT /api/duenos/<id>/**: Actualiza los datos completos de un dueño existente (Codigo 200).
+* **PATCH /api/duenos/<id>/**: Modifica campos individuales de un dueño (Codigo 200).
+* **DELETE /api/duenos/<id>/**: Borra permanentemente el registro de la base de datos (Codigo 204).
 
 ---
 
-## Modelo de Datos y Entidades
+## Tecnologias utilizadas
 
-El sistema gestiona 4 entidades vinculadas mediante relaciones de clave foránea:
-
-```text
-   +---------------+          1 : N          +---------------+
-   |     Dueno     |------------------------<|    Mascota    |
-   +---------------+                         +---------------+
-                                                     |
-                                                     | 1 : N
-                                                     v
-   +---------------+          1 : N          +---------------+
-   |  Veterinario  |------------------------<|AtencionMedica |
-   +---------------+                         +---------------+
-```
-
-* **Dueño (`Dueno`):** Datos del cliente o tutor responsable (Nombre, RUT, Teléfono, Correo, Dirección).
-* **Veterinario (`Veterinario`):** Profesional del centro médico (Nombre, Especialidad, Teléfono).
-* **Mascota (`Mascota`):** Ficha del paciente animal, asociada directamente a un Dueño (Nombre, Especie, Raza, Edad).
-* **Atención Médica (`AtencionMedica`):** Registro de consulta clínica, asociada a una Mascota y al Veterinario que realizó la atención (Fecha, Motivo de consulta, Diagnóstico, Tratamiento).
+* Python 3.13
+* Django
+* Django REST Framework
+* MySQL
+* mysqlclient / PyMySQL
+* HTML / CSS
+* Git y GitHub
 
 ---
 
-## Tecnologías y Dependencias
+## Estructura de URLs del proyecto
 
-* **Lenguaje:** Python 3.10+
-* **Framework Web:** Django (4.x / 5.x)
-* **API Toolkit:** Django REST Framework
-* **Base de Datos:** MySQL Server (mediante XAMPP)
-* **Conector DB:** PyMySQL
-* **Gestor de Variables de Entorno:** python-decouple / python-dotenv
-* **Control de Versiones:** Git y GitHub
-
----
-
-## Requisitos Previos
-
-Antes de ejecutar el proyecto, asegúrate de contar con:
-1. **Python 3.10+** instalado y agregado al `PATH`.
-2. **XAMPP** instalado (con módulos Apache y MySQL en ejecución).
-3. **Git** instalado en el equipo.
+| Ruta | Tipo | Acceso | Descripcion |
+| --- | --- | --- | --- |
+| `/` | Publica | Abierto | Pagina de bienvenida al sistema |
+| `/login/` | Publica | Abierto | Formulario para iniciar sesion |
+| `/logout/` | Protegida | Usuario logueado | Cierre de sesion del usuario |
+| `/dashboard/` | Protegida (FBV) | Solo personal | Panel principal con conteo de registros |
+| `/reporte/` | Protegida (CBV) | Solo personal | Listado de atenciones medicas |
+| `/api/duenos/` | API REST | Gestion de datos | Consulta general y creacion de dueños |
+| `/api/duenos/<id>/` | API REST | Gestion de datos | Consulta, edicion y eliminacion por ID |
 
 ---
 
-## Instalación y Puesta en Marcha
+## Instalacion y ejecucion local
 
-### Paso 1: Iniciar el servidor de Base de Datos
-1. Abre el panel de control de **XAMPP**.
-2. Haz clic en **Start** junto a los servicios **Apache** y **MySQL**.
-3. Verifica el acceso en tu navegador: `http://localhost/phpmyadmin`.
-
-### Paso 2: Clonar el repositorio
-Abre una terminal y descarga el proyecto:
-
+### 1. Clonar el repositorio
 ```bash
 git clone https://github.com/Shaul77/sistema-veterinaria.git
 cd sistema-veterinaria
 ```
 
-### Paso 3: Crear y activar el entorno virtual
-
-* **En Windows (PowerShell):**
-```powershell
-python -m venv env
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+### 2. Activar el entorno virtual
+```bash
+# En Windows (PowerShell)
 .\env\Scripts\activate
 ```
 
-* **En Linux / macOS:**
-```bash
-python3 -m venv env
-source env/bin/activate
-```
-
-### Paso 4: Instalar las dependencias
-Con el entorno virtual activo `(env)`, instala los paquetes:
-
+### 3. Instalar las librerias requeridas
 ```bash
 pip install -r requirements.txt
 ```
 
-### Paso 5: Configurar variables de entorno (`.env`)
-1. Crea un archivo llamado `.env` en la raíz del proyecto tomando como base `.env.example`.
-2. Completa los valores locales:
+### 4. Configuracion de la base de datos
+Crear un archivo llamado `.env` en la raiz del proyecto con los datos de conexion a MySQL:
 
 ```env
-SECRET_KEY=clave_secreta_django_aqui
+SECRET_KEY=tu_clave_secreta
 DEBUG=True
 
 DB_NAME=veterinaria_db
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=tu_clave_mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 ```
 
-### Paso 6: Configurar la Base de Datos
-* **Opción con migraciones (Recomendada):**
-  1. Crea una base de datos vacía llamada `veterinaria_db` en phpMyAdmin.
-  2. Ejecuta en la terminal:
+### 5. Iniciar la aplicacion
 ```bash
 python manage.py migrate
-```
-
-* **Opción con script SQL:**
-  1. Crea la base de datos `veterinaria_db` en phpMyAdmin.
-  2. Entra a la pestaña **Importar**, selecciona el archivo `database.sql` de la raíz del proyecto y haz clic en **Continuar**.
-
-### Paso 7: Iniciar el servidor
-Ejecuta:
-
-```bash
 python manage.py runserver
 ```
 
-El servidor quedará activo en: `[http://127.0.0.1:8000/](http://127.0.0.1:8000/)`.
-
----
-
-## Endpoints de la API y Ejemplos
-
-La API REST cuenta con una interfaz web interactiva disponible en: `[http://127.0.0.1:8000/api/](http://127.0.0.1:8000/api/)`.
-
-### Endpoints Disponibles
-
-| Método HTTP | Endpoint | Descripción | Parámetros / Payload |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/duenos/` | Listar todos los dueños | Ninguno |
-| `POST` | `/api/duenos/` | Registrar un dueño | JSON con datos del dueño |
-| `GET` | `/api/duenos/{id}/` | Detalle de un dueño | ID en URL |
-| `GET` | `/api/veterinarios/` | Listar todos los veterinarios | Ninguno |
-| `POST` | `/api/veterinarios/` | Registrar un veterinario | JSON del veterinario |
-| `GET` | `/api/mascotas/` | Listar todas las mascotas | Ninguno |
-| `POST` | `/api/mascotas/` | Registrar una mascota | JSON con datos y `dueno` (ID) |
-| `GET` | `/api/atenciones/` | Listar atenciones clínicas | Ninguno |
-| `POST` | `/api/atenciones/` | Registrar atención | JSON con `mascota` (ID) y `veterinario` (ID) |
-
----
-
-### Ejemplo de Petición y Respuesta JSON
-
-**Petición `POST` a `/api/mascotas/`:**
-```json
-{
-  "nombre": "Rocky",
-  "especie": "Canino",
-  "raza": "Golden Retriever",
-  "edad": 3,
-  "dueno": 1
-}
-```
-
-**Respuesta `201 Created`:**
-```json
-{
-  "id": 1,
-  "nombre": "Rocky",
-  "especie": "Canino",
-  "raza": "Golden Retriever",
-  "edad": 3,
-  "dueno": 1
-}
-```
-
----
-
-## Seguridad y Buenas Prácticas
-
-* **Variables de Entorno:** Credenciales de base de datos (`DB_USER`, `DB_PASSWORD`), host y `SECRET_KEY` se cargan en memoria y nunca se suben al repositorio.
-* **Reglas en `.gitignore`:** Se excluyen del control de versiones los entornos virtuales (`env/`), archivos temporales de Python (`__pycache__/`) y archivos de configuración sensible (`.env`).
-* **Plantilla `.env.example`:** Permite que cualquier evaluador clone y configure el proyecto de manera inmediata sin exponer datos reales.
-
----
-
-## Resolución de Problemas Frecuentes
-
-* **Error de conexión a la base de datos (`Can't connect to MySQL server`):**
-  Asegúrate de que el servicio **MySQL** esté iniciado en XAMPP y que el puerto configurado en el archivo `.env` sea `3306`.
-
-* **Error al activar el entorno virtual en PowerShell (`ExecutionPolicy`):**
-  Ejecuta en PowerShell con permisos de usuario:
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-```
-
-* **Error `Table 'veterinaria_db.api_dueno' doesn't exist`:**
-  Ejecuta las migraciones pendientes con `python manage.py migrate` o importa el archivo `database.sql` en phpMyAdmin.
+El proyecto se puede abrir en el navegador ingresando a `http://127.0.0.1:8000/`.
