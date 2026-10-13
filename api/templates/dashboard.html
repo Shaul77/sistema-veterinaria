@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Panel de Control</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
+        .header { background: #2c3e50; color: white; padding: 15px 25px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-links a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-weight: 500; }
+        .logout-btn { background: #e74c3c; padding: 6px 12px; border-radius: 4px; border: none; color: white; cursor: pointer; font-weight: bold; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 25px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); text-align: center; }
+        .card h3 { margin: 0; color: #7f8c8d; font-size: 14px; text-transform: uppercase; }
+        .card p { font-size: 32px; font-weight: bold; color: #2c3e50; margin: 10px 0 0 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Panel de Control</h2>
+        <div>
+            <span>Usuario: <strong>{{ usuario.username }}</strong></span>
+            <a href="{% url 'reporte' %}">Ver Reporte</a>
+            <a href="/api/">API</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left:15px;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Cerrar Sesion</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Duenos</h3>
+            <p>{{ total_duenos }}</p>
+        </div>
+        <div class="card">
+            <h3>Mascotas</h3>
+            <p>{{ total_mascotas }}</p>
+        </div>
+        <div class="card">
+            <h3>Veterinarios</h3>
+            <p>{{ total_veterinarios }}</p>
+        </div>
+        <div class="card">
+            <h3>Atenciones Medicas</h3>
+            <p>{{ total_atenciones }}</p>
+        </div>
+    </div>
+</body>
+</html>

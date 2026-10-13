@@ -83,3 +83,9 @@ USE_TZ = True
 # Archivos estaticos
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuración de autenticación y redirecciones de inicio/cierre de sesión
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
